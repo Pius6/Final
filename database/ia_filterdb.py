@@ -8,6 +8,7 @@ from umongo import Instance, Document, fields
 from motor.motor_asyncio import AsyncIOMotorClient
 from marshmallow.exceptions import ValidationError
 from info import FILE_DB_URL, FILE_DB_NAME, COLLECTION_NAME, MAX_RIST_BTNS
+from utils import get_settings, save_group_settings
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -28,6 +29,7 @@ class Media(Document):
     caption = fields.StrField(allow_none=True)
 
     class Meta:
+        indexes = ('$file_name', )
         collection_name = COLLECTION_NAME
 
 
