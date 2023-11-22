@@ -1,27 +1,25 @@
 import asyncio, re, ast, math, logging
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from Script import script
-from utils import get_shortlink, admin_filter 
+from utils import admin_filter 
 import pyrogram
 from database.connections_mdb import active_connection, all_connections, delete_connection, if_active, make_active, make_inactive
 from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GROUPS, P_TTI_SHOW_OFF, IMDB, PM_IMDB, SINGLE_BUTTON, PROTECT_CONTENT, \
-    SPELL_CHECK_REPLY, IMDB_TEMPLATE, IMDB_DELET_TIME, START_MESSAGE, PMFILTER, G_FILTER, BUTTON_LOCK, BUTTON_LOCK_TEXT, SHORT_URL, SHORT_API
+    SPELL_CHECK_REPLY, IMDB_TEMPLATE, IMDB_DELET_TIME, START_MESSAGE, PMFILTER, BUTTON_LOCK, BUTTON_LOCK_TEXT
 
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pyrogram import Client, filters, enums 
 from pyrogram.errors import FloodWait, UserIsBlocked, MessageNotModified, PeerIdInvalid
-from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings
+from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_settings, save_group_settings, send_all
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.filters_mdb import del_all, find_filter, get_filters
-from database.gfilters_mdb import find_gfilter, get_gfilters
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
 
 FILTER_MODE = {}
-G_MODE = {}
 SPELL_CHECK = {}
 
 @Client.on_message(filters.command('autofilter') & filters.group & filters.create(admin_filter))
@@ -47,29 +45,6 @@ async def fil_mod(client, message):
           await m.edit("ᴜꜱᴇ :- `/autofilter on` ᴏʀ `/autofilter off`")
 
 
-@Client.on_message(filters.command('g_filter') & filters.group & filters.create(admin_filter))
-async def g_fil_mod(client, message): 
-      mode_on = ["yes", "on", "true"]
-      mode_of = ["no", "off", "false"]
-
-      try: 
-         args = message.text.split(None, 1)[1].lower() 
-      except: 
-         return await message.reply("**ɪɴᴄᴏᴍᴩʟᴇᴛᴇ ᴄᴏᴍᴍᴀɴᴅ...**")
-      
-      m = await message.reply("**ꜱᴇᴛᴛɪɴɢ...**")
-
-      if args in mode_on:
-          G_MODE[str(message.chat.id)] = "True"
-          await m.edit("**ɢʟᴏʙᴀʟ ꜰɪʟᴛᴇʀ ᴇɴᴀʙʟᴇᴅ**")
-      
-      elif args in mode_of:
-          G_MODE[str(message.chat.id)] = "False"
-          await m.edit("**ɢʟᴏʙᴀʟ ꜰɪʟᴛᴇʀ ᴅɪꜱᴀʙʟᴇᴅ**")
-      else:
-          await m.edit("ᴜꜱᴇ :- `/g_filter on` ᴏʀ `/g_filter off`")
-
-
 @Client.on_callback_query(filters.create(lambda _, __, query: query.data.startswith("next")))
 async def next_page(bot, query):
     ident, req, key, offset = query.data.split("_")
@@ -87,13 +62,6 @@ async def next_page(bot, query):
     if not files: return
     settings = await get_settings(query.message.chat.id)
     nxreq  = query.from_user.id if query.from_user else 0
-    if SHORT_URL and SHORT_API:          
-        if settings["button"]:
-            btn = [[InlineKeyboardButton(text=f"⚡{get_size(file.file_size)}▪️{file.file_name}", url=await get_shortlink(f"https://telegram.dog/{temp.U_NAME}?start=files_{file.file_id}"))] for file in files ]
-        else:
-            btn = [[InlineKeyboardButton(text=f"▪️{file.file_name}", url=await get_shortlink(f"https://telegram.dog/{temp.U_NAME}?start=files_{file.file_id}")),
-                    InlineKeyboardButton(text=f"⚡{get_size(file.file_size)}", url=await get_shortlink(f"https://telegram.dog/{temp.U_NAME}?start=files_{file.file_id}"))] for file in files ]
-    else:        
         if settings["button"]:
             btn = [[InlineKeyboardButton(text=f"⚡{get_size(file.file_size)}▪️{file.file_name}", callback_data=f'files#{nxreq}#{file.file_id}')] for file in files ]
         else:
