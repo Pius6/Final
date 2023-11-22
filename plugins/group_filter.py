@@ -14,6 +14,7 @@ from utils import get_size, is_subscribed, get_poster, search_gagala, temp, get_
 from database.users_chats_db import db
 from database.ia_filterdb import Media, get_file_details, get_search_results
 from database.filters_mdb import del_all, find_filter, get_filters
+import logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
@@ -71,7 +72,7 @@ async def next_page(bot, query):
     btn.insert(0, [InlineKeyboardButton(text="🔞 CLICK HERE FOR OUR ADULT CHANNEL", url='https://t.me/Adultship_films')])
     btn.insert(1, [InlineKeyboardButton(f'📨 Info', 'tips'),
                    InlineKeyboardButton(f'📝 𝖳𝗂𝗉𝗌', 'info')]) 
-    btn.insert(2, [InlineKeyboardButton("📤 𝖲𝖾𝗇𝖽 𝖠𝗅𝗅 𝖥𝗂𝗅𝖾𝗌 📥", callback_data=f"send_all#{req}#{key}#{nxreq}")])
+    btn.insert(2, [InlineKeyboardButton("📤 𝖲𝖾𝗇𝖽 𝖠𝗅𝗅 𝖥𝗂𝗅𝖾𝗌 📥", callback_data=f"send_all#{req}#{key}#{pre}")])
     if 0 < offset <= 10:
         off_set = 0
     elif offset == 0:
