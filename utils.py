@@ -137,10 +137,10 @@ def list_to_str(k):
     else:
         return ' '.join(f'{elem}, ' for elem in k)
 
-__repo__ = "https://github.com/MrMKN/PROFESSOR-BOT"
-__version__ = "PROFESSOR-BOT ᴠ4.5.0"
+__repo__ = "https://github.com/Veramary878/Final"
+__version__ = "Hislordship V1.0"
 __license__ = "GNU GENERAL PUBLIC LICENSE V2"
-__copyright__ = "Copyright (C) 2023-present MrMKN <https://github.com/MrMKN>"
+__copyright__ = "Copyright (C) 2023-present Vera <https://github.com/Veramary878/Final>"
 
 async def search_gagala(text):
     usr_agent = {
@@ -303,21 +303,27 @@ def get_time(seconds):
             result += f'{int(period_value)}{period_name}'
     return result
     
-async def get_shortlink(link):
-    url = f'{SHORT_URL}/api'
-    params = {'api': SHORT_API, 'url': link}
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params, raise_for_status=True, ssl=False) as response:
-                data = await response.json()
-                if data["status"] == "success":
-                    return data['shortenedUrl']
-                else:
-                    logger.error(f"Error: {data['message']}")
-                    return link
-    except Exception as e:
-        logger.error(e)
-        return link
+async def send_all(bot, userid, files, ident):
+    for file in files:
+        f_caption = file.caption
+        title = file.file_name
+        size = get_size(file.file_size)
+        if CUSTOM_FILE_CAPTION:
+            try:
+                f_caption = CUSTOM_FILE_CAPTION.format(file_name='' if title is None else title,
+                                                        file_size='' if size is None else size,
+                                                        file_caption='' if f_caption is None else f_caption)
+            except Exception as e:
+                print(e)
+                f_caption = f_caption
+        if f_caption is None:
+            f_caption = f"{title}"
+        await bot.send_cached_media(
+            chat_id=userid,
+            file_id=file.file_id,
+            caption=f_caption,
+            protect_content=True if ident == "filep" else False,
+            reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('🍿Updates🍿', url="https://t.me/lordshiptv") ] ] ))
 
 
 # from Midukki-RoBoT
