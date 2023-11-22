@@ -128,19 +128,13 @@ async def advantage_spoll_choker(bot, query):
 
 
 @Client.on_message(filters.group & filters.text & filters.incoming & filters.chat(AUTH_GROUPS) if AUTH_GROUPS else filters.text & filters.incoming & filters.group)
-async def give_filter(client, message):
-    if G_FILTER:
-        if G_MODE.get(str(message.chat.id)) == "False":
-            return 
+async def give_filter(client, message):         
+    k = await manual_filters(client, message)
+    if k == False:
+        if FILTER_MODE.get(str(message.chat.id)) == "False":
+            return
         else:
-            kd = await global_filters(client, message)
-        if kd == False:          
-            k = await manual_filters(client, message)
-            if k == False:
-                if FILTER_MODE.get(str(message.chat.id)) == "False":
-                    return
-                else:
-                    await auto_filter(client, message)   
+            await auto_filter(client, message)   
     else:
         k = await manual_filters(client, message)
         if k == False:
