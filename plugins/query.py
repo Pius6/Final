@@ -19,7 +19,7 @@ from database.users_chats_db import db
 # Configuration
 from info import ADMINS, AUTH_CHANNEL, AUTH_USERS, CUSTOM_FILE_CAPTION, AUTH_GROUPS, P_TTI_SHOW_OFF, PICS, IMDB, PM_IMDB, SINGLE_BUTTON, PROTECT_CONTENT, \
     SPELL_CHECK_REPLY, IMDB_TEMPLATE, IMDB_DELET_TIME, START_MESSAGE, PMFILTER, BUTTON_LOCK, BUTTON_LOCK_TEXT
-
+import logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
@@ -203,7 +203,17 @@ async def cb_handler(client: Client, query: CallbackQuery):
             try: f_caption = CUSTOM_FILE_CAPTION.format(mention=query.from_user.mention, file_name='' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)  
             except Exception as e: logger.exception(e)
         await client.send_cached_media(chat_id=query.from_user.id, file_id=file_id, caption=f_caption, protect_content=True if ident == 'checksubp' else False)
+    
+    elif query.data == "pages":
+        await query.answer()
 
+    elif query.data.startswith("send_all"):
+        _, req, key, pre = query.data.split("#")
+        if int(req) not in [query.from_user.id, 0]:
+            return await query.answer("This is Not your Request, Request for Yours!!" , show_alert=True)
+        except Exception as e:
+        await query.answer(url=f"https://t.me/{temp.U_NAME}?start=all_{key}_{pre}")
+   
     elif query.data == "removebg":
         buttons = [[
             InlineKeyboardButton(text="𝖶𝗂𝗍𝗁 𝖶𝗁𝗂𝗍𝖾 𝖡𝖦", callback_data="rmbgwhite"),
