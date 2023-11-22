@@ -66,7 +66,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 await query.message.delete()
                 try: await query.message.reply_to_message.delete()
                 except: pass
-            else: await query.answer("Buddy Don't Touch Others Property 😁", show_alert=True)
+            else: await query.answer("Buddy Don't Touch people's Property 😁", show_alert=True)
             
     elif "groupcb" in query.data:
         group_id = query.data.split(":")[1]
@@ -140,16 +140,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             alert = alert.replace("\\n", "\n").replace("\\t", "\t")
             await query.answer(alert, show_alert=True)
             
-    elif "galert" in query.data:
-        i = query.data.split(":")[1]
-        keyword = query.data.split(":")[2]             
-        reply_text, btn, alerts, fileid = await find_gfilter("gfilters", keyword)
-        if alerts is not None:
-            alerts = ast.literal_eval(alerts)
-            alert = alerts[int(i)]
-            alert = alert.replace("\\n", "\n").replace("\\t", "\t")
-            await query.answer(alert, show_alert=True)
-    
     if query.data.startswith("pmfile"):
         ident, file_id = query.data.split("#")
         files_ = await get_file_details(file_id)
