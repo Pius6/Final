@@ -64,15 +64,13 @@ async def next_page(bot, query):
     settings = await get_settings(query.message.chat.id)
     nxreq  = query.from_user.id if query.from_user else 0
         if settings["button"]:
-            btn = [[InlineKeyboardButton(text=f"📂{get_size(file.file_size)}||{file.file_name}", callback_data=f'files#{nxreq}#{file.file_id}')] for file in files ]
+            btn = [[InlineKeyboardButton(text=f"»{get_size(file.file_size)}||{file.file_name}", callback_data=f'files#{nxreq}#{file.file_id}')] for file in files ]
         else:
             btn = [[InlineKeyboardButton(text=f"{file.file_name}", callback_data=f'files#{nxreq}#{file.file_id}'),
                     InlineKeyboardButton(text=f"{get_size(file.file_size)}", callback_data=f'files#{nxreq}#{file.file_id}')] for file in files ]
 
-    btn.insert(0, [InlineKeyboardButton(text="🔞 CLICK HERE FOR OUR ADULT CHANNEL", url='https://t.me/Adultship_films')])
-    btn.insert(1, [InlineKeyboardButton(f'📨 Info', 'tips'),
+    btn.insert(0, [InlineKeyboardButton(f'📨 Info', 'tips'),
                    InlineKeyboardButton(f'📝 𝖳𝗂𝗉𝗌', 'info')]) 
-    btn.insert(2, [InlineKeyboardButton("📤 𝖲𝖾𝗇𝖽 𝖠𝗅𝗅 𝖥𝗂𝗅𝖾𝗌 📥", callback_data=f"send_all#{req}#{key}#{nxreq}")])
     if 0 < offset <= 10:
         off_set = 0
     elif offset == 0:
@@ -96,7 +94,8 @@ async def next_page(bot, query):
                 InlineKeyboardButton("↪️ ɴᴇxᴛ", callback_data=f"next_{req}_{key}_{n_offset}")
             ],
         )
-    
+    btn.insert(0, [InlineKeyboardButton(text="🔞 CLICK HERE FOR OUR ADULT CHANNEL", url='https://t.me/Adultship_films')])
+    btn.insert(2, [InlineKeyboardButton("📤 𝖲𝖾𝗇𝖽 𝖠𝗅𝗅 𝖥𝗂𝗅𝖾𝗌 📥", callback_data=f"send_all#{req}#{key}#{pre}")]) 
     try:
         await query.edit_message_reply_markup( reply_markup=InlineKeyboardMarkup(btn))
     except MessageNotModified:
