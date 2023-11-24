@@ -41,16 +41,13 @@ async def start(client, message):
             InlineKeyboardButton("♻️ HΞLᎮ ♻️", callback_data="help"),
             InlineKeyboardButton("💫 ΛBOUT 💫", callback_data="about")
         ]]
-        m = await message.reply_sticker("CAACAgUAAxkBAAEBvlVk7YKnYxIHVnKW2PUwoibIR2ygGAACBAADwSQxMYnlHW4Ls8gQHgQ") 
-        await asyncio.sleep(2)
         await message.reply_photo(photo=random.choice(PICS), caption=START_MESSAGE.format(user=message.from_user.mention, bot=client.mention), reply_markup=InlineKeyboardMarkup(buttons), parse_mode=enums.ParseMode.HTML)
-        return await m.delete()
         
     if AUTH_CHANNEL and not await is_subscribed(client, message):
         try:
             invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
         except ChatAdminRequired:
-            logger.error("MAKE SURE BOT IS ADMIN IN FORCESUB CHANNEL")
+            logger.error("MAKE SURE BOT IS ADMIN IN THE FORCESUB CHANNEL")
             return
         btn = [[InlineKeyboardButton("Jᴏɪɴ Mʏ Cʜᴀɴɴᴇʟ ✨", url=invite_link.invite_link)]]
         if message.command[1] != "subscribe" or message.command[1] != "send_all":
@@ -77,10 +74,7 @@ async def start(client, message):
             InlineKeyboardButton("♻️ HΞLᎮ ♻️", callback_data="help"),
             InlineKeyboardButton("💫 ΛBOUT 💫", callback_data="about")
        ]]
-        m = await message.reply_sticker("CAACAgUAAxkBAAEBvlVk7YKnYxIHVnKW2PUwoibIR2ygGAACBAADwSQxMYnlHW4Ls8gQHgQ")
-        await asyncio.sleep(2)
         await message.reply_photo(photo=random.choice(PICS), caption=START_MESSAGE.format(user=message.from_user.mention, bot=client.mention), reply_markup=InlineKeyboardMarkup(buttons), parse_mode=enums.ParseMode.HTML)
-        return await m.delete()
         
     data = message.command[1]
     try:
@@ -88,6 +82,26 @@ async def start(client, message):
     except:
         file_id = data
         pre = ""
+        
+    if data.startswith("all"):
+        _, key, pre = data.split("_", 2)
+        files = temp.FILES_IDS.get(key)
+        if not files:
+            return await message.reply('<b><i>No such file exist.</b></i>')
+        
+        for file in files:
+            title = file.file_name
+            size=get_size(file.file_size)
+            f_caption=file.caption
+            if CUSTOM_FILE_CAPTION:
+                try:
+                    f_caption=CUSTOM_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                except:
+                    f_caption=f_caption
+            if f_caption is None:
+                f_caption = f"{file.file_name}"
+            await client.send_cached_media(chat_id=message.from_user.id, file_id=file_id, protect_content=True if pre == 'filep' else False,)
+        return
         
     if data.split("-", 1)[0] == "BATCH":
         sts = await message.reply("PLEASE WAIT......")
