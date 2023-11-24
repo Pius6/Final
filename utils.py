@@ -25,11 +25,13 @@ class temp(object):
     CURRENT = 0
     CANCEL = False
     MELCOW = {}
+    FILES = {}
     U_NAME = None
     B_NAME = None
     SETTINGS = {}
     GP_BUTTONS = {}
     PM_BUTTONS = {}
+    FILES_IDS = {}
     PM_SPELL = {}
     GP_SPELL = {}
 
@@ -199,6 +201,9 @@ def get_size(size):
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
 
+def split_list(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
 
 def get_file_id(msg: Message):
     if not msg.media: return None
@@ -344,8 +349,8 @@ async def send_all(bot, userid, files, ident):
             file_id=file.file_id,
             caption=f_caption,
             protect_content=True if ident == "filep" else False,
-            reply_markup=InlineKeyboardMarkup( [ [ InlineKeyboardButton('🍿Updates🍿', url="https://t.me/lordshiptv") ] ] ))
-
+        ) 
+        
 
 # from Midukki-RoBoT
 def extract_time(time_val):
