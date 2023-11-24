@@ -1,17 +1,19 @@
-import datetime, time, os, asyncio,logging 
+import datetime, time, os, asyncio, logging 
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong, PeerIdInvalid
 from pyrogram.types import Message, InlineKeyboardButton
 from pyrogram import Client, filters, enums
 from database.users_chats_db import db
+from utils import broadcast_messages
 from info import ADMINS
 
 @Client.on_message(filters.command("broadcast") & filters.user(ADMINS) & filters.reply)
+# https://t.me/GetTGLink/4178
 async def verupikkals(bot, message):
     users = await db.get_all_users()
     b_msg = message.reply_to_message
     sts = await message.reply_text(
-        text='🔊 Broadcasting your messages...'
+        text='Broadcasting your messages...'
     )
     start_time = time.time()
     total_users = await db.total_users_count()
@@ -38,28 +40,3 @@ async def verupikkals(bot, message):
             await sts.edit(f"Broadcast in progress:\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")    
     time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
     await sts.edit(f"Broadcast Completed:\nCompleted in {time_taken} seconds.\n\nTotal Users {total_users}\nCompleted: {done} / {total_users}\nSuccess: {success}\nBlocked: {blocked}\nDeleted: {deleted}")
-
-@Client.on_message(filters.command("group_broadcast") & filters.user(ADMINS) & filters.reply)
-async def broadcast_group(bot, message):
-    groups = await db.get_all_chats()
-    b_msg = message.reply_to_message
-    sts = await message.reply_text(
-        text='🔊 Broadcasting your messages To Groups...'
-    )
-    start_time = time.time()
-    total_groups = await db.total_chat_count()
-    done = 0
-    failed =0
-
-    success = 0
-    async for group in groups:
-        pti, sh = await broadcast_messages_group(int(group['id']), b_msg)
-        if pti:
-            success += 1
-        elif sh == "Error":
-                failed += 1
-        done += 1
-        if not done % 20:
-            await sts.edit(f"Broadcast in progress:\n\nTotal Groups {total_groups}\nCompleted: {done} / {total_groups}\nSuccess: {success}")    
-    time_taken = datetime.timedelta(seconds=int(time.time()-start_time))
-    await sts.edit(f"Broadcast Completed:\nCompleted in {time_taken} seconds.\n\nTotal Groups {total_groups}\nCompleted: {done} / {total_groups}\nSuccess: {success}")
