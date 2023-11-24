@@ -50,7 +50,7 @@ async def leave_a_chat(bot, message):
     except: chat = chat
     try:
         buttons = [[InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url=f'https://t.me/{SUPPORT_CHAT}')]]
-        await bot.send_message(chat_id=chat, text='<b>Hᴇʟʟᴏ Fʀɪᴇɴᴅs, \nMʏ Aᴅᴍɪɴ Hᴀs Tᴏʟᴅ Mᴇ Tᴏ Lᴇᴀᴠᴇ Fʀᴏᴍ Gʀᴏᴜᴘ Sᴏ I Gᴏ! Iғ Yᴏᴜ Wᴀɴɴᴀ Aᴅᴅ Mᴇ Aɢᴀɪɴ Cᴏɴᴛᴀᴄᴛ Mʏ Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ</b>', reply_markup=InlineKeyboardMarkup(buttons))
+        await bot.send_message(chat_id=chat, text='<b>Hᴇʟʟᴏ Fʀɪᴇɴᴅs, \nMʏ Aᴅᴍɪɴ Hᴀs Tᴏʟᴅ Mᴇ Tᴏ Lᴇᴀᴠᴇ Fʀᴏᴍ Gʀᴏᴜᴘ Sᴏ I AM LEAVING! Iғ Yᴏᴜ Wᴀɴɴᴀ Aᴅᴅ Mᴇ Aɢᴀɪɴ Cᴏɴᴛᴀᴄᴛ Mʏ Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ</b>', reply_markup=InlineKeyboardMarkup(buttons))
         await bot.leave_chat(chat)
     except Exception as e:
         await message.reply(f'Eʀʀᴏʀ: {e}')
@@ -113,7 +113,7 @@ async def get_ststs(bot, message):
     await rju.edit(script.STATUS_TXT.format(files, total_users, totl_chats, size, free))
 
 
-@Client.on_message(filters.command('invite') & filters.user(ADMINS))
+# @Client.on_message(filters.command('invite') & filters.user(ADMINS))
 async def gen_invite(bot, message):
     if len(message.command) == 1: return await message.reply('Gɪᴠᴇ Mᴇ A Cʜᴀᴛ Iᴅ')
     chat = message.command[1]
@@ -350,7 +350,7 @@ async def imdb_callback(bot: Client, quer_y: CallbackQuery):
             **locals()
         )
     else:
-        caption = "ɴᴏ ʀᴇꜱᴜʟᴛꜱ"
+        caption = "<b>No Results</b>"
     if imdb.get('poster'):
         try:
             await quer_y.message.reply_photo(photo=imdb['poster'], caption=caption, reply_markup=InlineKeyboardMarkup(btn))
@@ -374,7 +374,7 @@ async def log_file(bot, msg):
 
 @Client.on_message(filters.command("restart") & filters.user(ADMINS))
 async def restart_bot(bot, msg):
-    await msg.reply("Rᴇꜱᴛᴀᴛɪɴɢ........")
+    await msg.reply("♻️ Restarting........")
     await asyncio.sleep(2)
     await sts.delete()
     os.execl(sys.executable, sys.executable, *sys.argv)
