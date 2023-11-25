@@ -32,11 +32,11 @@ async def pm_next_page(bot, query):
     try: n_offset = int(n_offset)
     except: n_offset = 0
     if not files: return
-    
-        if SINGLE_BUTTON:
-            btn = [[InlineKeyboardButton(text=f"➲ {get_size(file.file_size)} || {file.file_name}", callback_data=f'pmfile#{file.file_id}')] for file in files ]
-        else:
-            btn = [[InlineKeyboardButton(text=f"{file.file_name}", callback_data=f'pmfile#{file.file_id}'),
+        
+    if SINGLE_BUTTON:
+        btn = [[InlineKeyboardButton(text=f"➲ {get_size(file.file_size)} || {file.file_name}", callback_data=f'pmfile#{file.file_id}')] for file in files ]
+    else:
+        btn = [[InlineKeyboardButton(text=f"{file.file_name}", callback_data=f'pmfile#{file.file_id}'),
                     InlineKeyboardButton(text=f"{get_size(file.file_size)}", callback_data=f'pmfile#{file.file_id}')] for file in files ]
 
     btn.insert(0, [InlineKeyboardButton(f'📨 Info', 'tips'),
